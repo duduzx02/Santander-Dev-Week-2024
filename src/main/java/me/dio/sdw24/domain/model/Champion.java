@@ -1,13 +1,11 @@
-package me.dio.sdw2024.domain.model;
+package me.dio.sdw24.domain.model;
 
-public record Champions(
+public record Champion(
         Long id,
         String name,
         String role,
         String lore,
         String imageUrl
 ) {
-
-
 
 }
