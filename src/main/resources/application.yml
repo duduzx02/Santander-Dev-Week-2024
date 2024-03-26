@@ -1,11 +1,11 @@
 spring:
   application:
     name: santander-dev-week-2024
-  dataspurce:
+  datasource:
     url: jdbc:h2:mem:sdw2024
     drive-class-name: org.h2.Driven
     username: sa
     password: ''
   h2:
     console:
-      enable: true
+      enabled: true
