@@ -9,7 +9,7 @@ public interface ChampionsRepository {
 
     List<Champions> findAll();
 
-    Optional<Champions> findById();
+    Optional<Champions> findById(Long id);
 
 
 }
