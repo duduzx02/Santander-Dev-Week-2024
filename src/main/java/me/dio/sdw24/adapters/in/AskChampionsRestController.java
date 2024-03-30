@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import me.dio.sdw24.application.AskChampionUseCase;
 import me.dio.sdw24.application.ListChampionsUseCase;
 import me.dio.sdw24.domain.model.Champion;
+import me.dio.sdw24.domain.ports.GenerativeAiApi;
 import org.bouncycastle.crypto.generators.BaseKDFBytesGenerator;
 import org.springframework.web.bind.annotation.*;
 
