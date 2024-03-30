@@ -2,19 +2,14 @@ package me.dio.sdw24.adapters.in;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import me.dio.sdw24.application.AskChampionUseCase;
-import me.dio.sdw24.application.ListChampionsUseCase;
-import me.dio.sdw24.domain.model.Champion;
-import me.dio.sdw24.domain.ports.GenerativeAiApi;
-import org.bouncycastle.crypto.generators.BaseKDFBytesGenerator;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Tag(name = "Campeões", description = "Endpoints do domínio de campeões do LOL.")
 @RestController
 @RequestMapping("/champions")
 public record AskChampionsRestController(AskChampionUseCase useCase) {
 
+    @CrossOrigin
     @PostMapping("/{championId}/ask")
     public  AskChampionResponse askChampion(@PathVariable Long championId, @RequestBody AskChampionRequest request){
 

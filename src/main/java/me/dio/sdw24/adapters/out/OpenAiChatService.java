@@ -1,8 +1,10 @@
 package me.dio.sdw24.adapters.out;
 
+import feign.FeignException;
 import feign.RequestInterceptor;
-import me.dio.sdw24.domain.ports.GenerativeAiApi;
+import me.dio.sdw24.domain.ports.GenerativeAiService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
@@ -10,23 +12,30 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
-@FeignClient(name = "openAiApi", url = "${gemini.base-url}", configuration = OpenAiChatService.Config.class)
-public interface OpenAiChatService extends GenerativeAiApi {
+@ConditionalOnProperty(name = "generative-ai.provider", havingValue = "OPENAI", matchIfMissing = true)
+@FeignClient(name = "openAiChatApi", url = "${openai.base-url}", configuration = OpenAiChatService.Config.class)
+public interface OpenAiChatService extends GenerativeAiService {
 
     @PostMapping("/v1/chat/completions")
     OpenAiCHatCompletionResp chatCompletion(OpenAiChatCompletionReq req);
 
+    @Override
     default String generateContent(String objective, String context) {
          String model = "gpt-3.5-turbo";
          List<Message> messages = List.of(
                  new Message("system", objective),
                  new Message("user", context)
          );
+
          OpenAiChatCompletionReq req = new OpenAiChatCompletionReq(model, messages);
-
-        OpenAiCHatCompletionResp resp = chatCompletion(req);
-
-        return resp.choices().get(0).message().content();
+         try{
+         OpenAiCHatCompletionResp resp = chatCompletion(req);
+         return resp.choices().get(0).message().content();
+         } catch (FeignException httpErrors){
+             return "Erro de comunição com a openai API";
+         } catch (Exception unexpectedError){
+             return "O Retorno da API do openai não contém os dados esperados";
+         }
     }
 
     record OpenAiChatCompletionReq(String model, List<Message> messages) { }

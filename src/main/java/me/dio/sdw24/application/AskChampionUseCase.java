@@ -3,9 +3,9 @@ package me.dio.sdw24.application;
 import me.dio.sdw24.domain.exception.ChampionNotFoundException;
 import me.dio.sdw24.domain.model.Champion;
 import me.dio.sdw24.domain.ports.ChampionsRepository;
-import me.dio.sdw24.domain.ports.GenerativeAiApi;
+import me.dio.sdw24.domain.ports.GenerativeAiService;
 
-public record AskChampionUseCase(ChampionsRepository repository, GenerativeAiApi genAiApi) {
+public record AskChampionUseCase(ChampionsRepository repository, GenerativeAiService genAiApi) {
 
     public String askChampion(Long championId, String question){
         Champion champion =
