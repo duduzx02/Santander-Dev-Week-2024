@@ -10,8 +10,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
+
 @ConditionalOnProperty(name = "generative-ai.provider", havingValue = "GEMINI")
-@FeignClient(name = "geniApi", url = "${gemini.base-url}", configuration = GoogleGeminiService.Config.class)
+@FeignClient(name = "geminiApi", url = "${gemini.base-url}", configuration = GoogleGeminiService.Config.class)
 public interface GoogleGeminiService extends GenerativeAiService {
 
     @PostMapping("/v1beta/models/gemini-pro:generateContent")
@@ -27,31 +28,26 @@ public interface GoogleGeminiService extends GenerativeAiService {
         GoogleGeminiReq req = new GoogleGeminiReq(
                 List.of(new Content(List.of(new Part(prompt))))
         );
-
         try {
             GoogleGeminiResp resp = textOnlyInput(req);
             return resp.candidates().get(0).content().parts().get(0).text();
-        } catch (FeignException httpErrors){
-            return "Erro de comunicação com a API do Gemini.";
-        } catch (Exception unexpectedError){
-            return "O Retorno da API do Gemini não contém os dados esperados";
+        } catch (FeignException httpErrors) {
+            return "Deu ruim! Erro de comunicação com a API do Google Gemini.";
+        } catch (Exception unexpectedError) {
+            return "Deu mais ruim ainda! O retorno da API do Google Gemini não contem os dados esperados.";
         }
     }
 
     record GoogleGeminiReq(List<Content> contents) { }
-    record GoogleGeminiResp(List<Candidate> candidates){}
-    record Content(List<Part> parts){}
-    record Part(String text){}
-    record Candidate(Content content){}
+    record GoogleGeminiResp(List<Candidate> candidates) { }
+    record Content(List<Part> parts) { }
+    record Part(String text) { }
+    record Candidate(Content content) { }
 
-
-
-
-    class Config{
+    class Config {
         @Bean
-        public RequestInterceptor apiKeyRequestInterceptor(@Value("${gemini.api-key}") String apiKey){
+        public RequestInterceptor apiKeyRequestInterceptor(@Value("${gemini.api-key}") String apiKey) {
             return requestTemplate -> requestTemplate.query("key", apiKey);
         }
     }
-
 }
